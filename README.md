@@ -1,1 +1,1 @@
-# Range Type
+# Range
