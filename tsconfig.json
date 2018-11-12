@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "es2015",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "outDir": "dist"
+  },
+  "files": [
+    "index.ts"
+  ]
+}
