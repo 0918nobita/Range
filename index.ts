@@ -47,9 +47,9 @@ type _4 = Sum<_3, _1>; // { isZero: False, pred: Succ<Succ<Succ<Zero>>> }
 type _0 = Product<_2, Zero>;
 type _6 = Product<_2, _3>;
 
-type IZero = { isZero: True, isNegative: False };
-type IPositive = { isZero: False, isNegative: False, pred: Nat };
-type INegative = { isZero: False, isNegative: True, pred: Nat };
+type IZero = Zero & { isNegative: False };
+type IPositive = NonZero & { isNegative: False };
+type INegative = NonZero & { isNegative: True };
 type Integer = INegative | IZero | IPositive;
 
 type ISucc<I extends Integer>
@@ -70,6 +70,14 @@ type INNSum<L extends INegative, R extends INegative>
       IPPSum<
         { isZero: False, isNegative: False, pred: L['pred'] },
         { isZero: False, isNegative: False, pred: R['pred'] }>>;
+
+/*
+type IPNSum<L extends IPositive | IZero, R extends INegative>
+  = L extends ;
+
+type INPSum<L extends INegative, R extends IPositive | IZero>
+  = ;
+*/
 
 type _i1 = ISucc<IZero>;        //  1
 type _i2 = ISucc<_i1>;          //  2
