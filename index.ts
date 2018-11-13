@@ -71,16 +71,6 @@ type IPred<I extends Integer>
       ? { isZero: False, isNegative: True, pred: Succ<Succ<T>> }
       : IMinus<ISucc<IZero>>;
 
-type _i1 = ISucc<IZero>; //  1 
-type _i2 = ISucc<_i1>;   //  2
-type _i3 = ISucc<_i2>;   //  3
-type _im3 = IMinus<_i3>; // -3 
-type _im4 = IPred<_im3>; // -4
-type _im5 = IPred<_im4>; // -5
-type _im2 = ISucc<_im3>; // -2
-type _im1 = ISucc<_im2>; // -1
-type _i0 = ISucc<_im1>;  //  0
-
 type IPPSum<L extends IPositive | IZero, R extends IPositive | IZero>
   = L extends Succ<infer T>
     ? { isZero: And<L['isZero'], R['isZero']>, isNegative: False, pred: Sum<T, Succ<R>>['pred'] }
@@ -94,6 +84,16 @@ type INNSum<L extends INegative, R extends INegative>
 
 type _im6 = INNSum<_im5, _im1>; // (-5) + (-1) = -6
 type _i6 = IPPSum<IMinus<_im5>, IMinus<_im1>>; // (-(-5)) + (-(-1)) = 6
+
+type _i1 = ISucc<IZero>; //  1 
+type _i2 = ISucc<_i1>;   //  2
+type _i3 = ISucc<_i2>;   //  3
+type _im3 = IMinus<_i3>; // -3 
+type _im4 = IPred<_im3>; // -4
+type _im5 = IPred<_im4>; // -5
+type _im2 = ISucc<_im3>; // -2
+type _im1 = ISucc<_im2>; // -1
+type _i0 = ISucc<_im1>;  //  0
 
 /*
 type IPNSum<L extends IPositive, R extends INegative>
