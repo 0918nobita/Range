@@ -60,22 +60,25 @@ type IMinus<I extends Integer>
 type ISucc<I extends Integer>
   = I extends IPositive | IZero
     ? { isZero: False, isNegative: False, pred: Succ<I>['pred'] }
-    : (I extends Succ<Succ<infer T>>
+    : (I extends { isZero: False, isNegative: True, pred: Succ<infer T> }
       ? { isZero: False, isNegative: True, pred: T }
       : IZero);
 
-type _i1 = ISucc<IZero>;
-type _i2 = ISucc<_i1>;
-type _i3 = ISucc<_i2>;
-type _im3 = IMinus<_i3>;
-type _im2 = ISucc<_im3>;
+type _i1 = ISucc<IZero>; //  1 
+type _i2 = ISucc<_i1>;   //  2
+type _i3 = ISucc<_i2>;   //  3
+type _im3 = IMinus<_i3>; // -3
+type _im2 = ISucc<_im3>; // -2
+type _im1 = ISucc<_im2>; // -1
+type _i0 = ISucc<_im1>;  // 0
+
+type IPred<I extends Integer>
+  = I extends IPositive
 
 /*
 type ISucc<I extends Integer>
   = { isZero: False, isNegative: I['isNegative'], pred: I };
 */
-
-type _im1 = Succ<Zero> & { isNegative: True };
 
 /*
 type ISucc<I extends Integer>
