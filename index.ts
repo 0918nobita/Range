@@ -50,7 +50,7 @@ type _6 = Product<_2, _3>;
 type IZero = Zero & { isNegative: False };
 type IPositive = NonZero & { isNegative: False };
 type INegative = NonZero & { isNegative: True };
-type Integer = INegative | IZero | IPositive;
+type Integer = INegative | IZero | IPositive | Nat;
 
 type IMinus<I extends Integer>
   = I extends INegative | IPositive
@@ -81,6 +81,34 @@ type INNSum<L extends INegative, R extends INegative>
       IPPSum<
         { isZero: False, isNegative: False, pred: L['pred'] },
         { isZero: False, isNegative: False, pred: R['pred'] }>>;
+/*
+type IPNSum<L extends IPositive, R extends INegative>
+  = R extends { isZero: False, isNegative: True, pred: Succ<infer T> }
+    ? { isZero: IPNSum<L, T>['isZero'], isNegative: IPNSum<L, T>['isNegative'], pred: IPNSum<L, T> }
+    : Pred<L>;
+*/
+
+/*
+type IPNSum<L extends IPositive, R extends INegative | IPositive | IZero>
+  = R extends ISucc<infer T>
+    ? { isZero: IPNSum<L, T>['isZero'], isNegative: IPNSum<L, T>, pred: IPNSum<L, T> }
+    : Pred<L>;
+*/
+
+type IPNSum<L extends IPositive, R extends INegative | Nat>
+  = R extends IZero
+    ? L
+    : {
+      isZero:     IPred<IPNSum<L, ISucc<R>>>['isZero'],
+      isNegative: IPred<IPNSum<L, ISucc<R>>>['isNegative'],
+      pred:       IPred<IPNSum<L, ISucc<R>>>['pred']
+    };
+
+type INPSum<L extends INegative, R extends IPositive> = IPNSum<R, L>;
+
+// 現状、正の数 L と負の数 R について、 L > |R| のときだけ正しい Integer を返す
+type ttt = IPNSum<_i5, _im4>;
+type tttt = INPSum<_im2, _i3>;
 
 type _im6 = INNSum<_im5, _im1>; // (-5) + (-1) = -6
 type _i6 = IPPSum<IMinus<_im5>, IMinus<_im1>>; // (-(-5)) + (-(-1)) = 6
@@ -88,22 +116,13 @@ type _i6 = IPPSum<IMinus<_im5>, IMinus<_im1>>; // (-(-5)) + (-(-1)) = 6
 type _i1 = ISucc<IZero>; //  1 
 type _i2 = ISucc<_i1>;   //  2
 type _i3 = ISucc<_i2>;   //  3
+type _i5 = IPPSum<_i2, _i3>;
 type _im3 = IMinus<_i3>; // -3 
 type _im4 = IPred<_im3>; // -4
 type _im5 = IPred<_im4>; // -5
 type _im2 = ISucc<_im3>; // -2
 type _im1 = ISucc<_im2>; // -1
 type _i0 = ISucc<_im1>;  //  0
-
-/*
-type IPNSum<L extends IPositive, R extends INegative>
-  = R extends IMinus<ISucc<infer T>> ? { isZero: Bool, isNegative: Bool, pred: T } : L ;
-*/
-
-/*
-type INPSum<L extends INegative, R extends IPositive | IZero>
-  = ;
-*/
 
 type Pred<N extends Succ<Nat>> = N['pred'];
 type IsZero<N extends Nat> = N['isZero'];
