@@ -60,6 +60,11 @@ type IMinus<I extends Integer>
     ? { isZero: I['isZero'], isNegative: Not<I['isNegative']>, pred: I['pred'] }
     : IZero;
 
+type IPPSum<L extends IPositive | IZero, R extends IPositive | IZero>
+  = L extends Succ<infer T>
+    ? { isZero: And<L['isZero'], R['isZero']>, isNegative: False, pred: Sum<T, Succ<R>>['pred'] }
+    : R;
+
 type _i1 = ISucc<IZero>;        //  1
 type _i2 = ISucc<_i1>;          //  2
 type _i3 = IPPSum<_i1, _i2>;    //  3
