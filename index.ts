@@ -21,22 +21,34 @@ type True = 't';
 type Bool = True | False;
 
 type Zero = { isZero: True };
-type Nat = Zero | { isZero: False, pred: Nat };
+type NonZero = { isZero: False, pred: Nat };
+type Nat = Zero | NonZero;
 type Succ<N extends Nat> = { isZero: False, pred: N };
 
-type Pred<N extends Succ<Nat>> = N['pred'];
-type IsZero<N extends Nat> = N['isZero'];
-
 type Sum<L extends Nat, R extends Nat>
-  = L extends Succ<infer T> ? { isZero: False, pred: Sum<T, Succ<R>>['pred'] } : R;
+  = L extends Succ<infer T>
+    ? { isZero: False, pred: Sum<T, Succ<R>>['pred'] }
+    : R;
 
-type _0 = Zero;        // { isZero: True }
-type _1 = Succ<_0>;    // { isZero: False, pred: Zero }
+type NonZeroProduct<L extends NonZero, R extends NonZero>
+  = L extends Succ<Succ<infer T>>
+      ? { isZero: False, pred: Sum<R, NonZeroProduct<Succ<T>, R>>['pred'] }
+      : R;
+
+type Product<L extends Nat, R extends Nat>
+  = L extends NonZero ? (R extends NonZero ? NonZeroProduct<L, R> : Zero) : Zero;
+
+type _1 = Succ<Zero>;  // { isZero: False, pred: Zero }
 type _2 = Succ<_1>;    // { isZero: False, pred: Succ<Zero> }
 type _3 = Succ<_2>;    // { isZero: False, pred: Succ<Succ<Zero>> }
 
 type _4 = Sum<_3, _1>; // { isZero: False, pred: Succ<Succ<Succ<Zero>>> }
-type _5 = Sum<_2, _3>; // { isZero: False, pred: Succ<Succ<Succ<Succ<Zero>>>> }
+
+type _0 = Product<_2, Zero>;
+type _6 = Product<_2, _3>;
+
+type Pred<N extends Succ<Nat>> = N['pred'];
+type IsZero<N extends Nat> = N['isZero'];
 
 type f = IsZero<Zero>;      // a: True
 type g = IsZero<Succ<Zero>>; // b: False
