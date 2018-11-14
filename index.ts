@@ -76,13 +76,15 @@ type IPPSum<L extends IPositive | IZero, R extends IPositive | IZero>
     ? { isZero: And<L['isZero'], R['isZero']>, isNegative: False, pred: Sum<T, Succ<R>>['pred'] }
     : R;
 
-type INNSum<L extends INegative, R extends INegative>
-  = IMinus<
-      IPPSum<
-        { isZero: False, isNegative: False, pred: L['pred'] },
-        { isZero: False, isNegative: False, pred: R['pred'] }>>;
+type INNSum<L extends INegative, R extends Integer>
+  = R extends INegative
+    ? IMinus<
+        IPPSum<
+          { isZero: False, isNegative: False, pred: L['pred'] },
+          { isZero: False, isNegative: False, pred: R['pred'] }>>
+    : 'うんち';
 
-type IPNSum<L extends IPositive, R extends Integer>
+type IPNSum<L extends IPositive | IZero, R extends Integer>
   = R extends { isZero: True, isNegative: False }
     ? L // when R == IZero
     : {
@@ -91,7 +93,20 @@ type IPNSum<L extends IPositive, R extends Integer>
       pred: IPred<IPNSum<L, ISucc<R>>>['pred']
     };
 
-type INPSum<L extends INegative, R extends IPositive> = IPNSum<R, L>;
+type INPSum<L extends INegative, R extends IPositive | IZero> = IPNSum<R, L>;
+
+type ISum<L extends INegative, R extends Integer>
+  = L extends IZero
+    ? R
+    : (R extends IZero
+      ? L
+      : (L extends IPositive
+        ? (R extends IPositive
+          ? IPPSum<L, R>
+          : IPNSum<L, R>)
+        : (R extends IPositive
+          ? INPSum<L, R>
+          : INNSum<L, R>)));
 
 type ttt = IPNSum<_i2, _im3>;
 type tttt = INPSum<_im2, _i3>;
