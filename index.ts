@@ -47,32 +47,15 @@ type _4 = Sum<_3, _1>; // { isZero: False, pred: Succ<Succ<Succ<Zero>>> }
 type _0 = Product<_2, Zero>;
 type _6 = Product<_2, _3>;
 
-/*
 type IZero = Zero & { isNegative: False };
 type IPositive = NonZero & { isNegative: False };
 type INegative = NonZero & { isNegative: True };
-type Integer = INegative | IZero | IPositive;
-*/
-
-type IZero = { isZero: True, isNegative: False };
-type IPositive = { isZero: False, isNegative: False, pred: Nat };
-type INegative = { isZero: False, isNegative: True, pred: Nat };
 type Integer = INegative | IZero | IPositive;
 
 type IMinus<I extends Integer>
   = I extends INegative | IPositive
     ? { isZero: I['isZero'], isNegative: Not<I['isNegative']>, pred: I['pred'] }
     : IZero;
-/*
-type ISucc<I extends Integer>
-  = I extends IPositive | IZero
-    ? { isZero: False, isNegative: False, pred: Succ<I>['pred'] }
-    : (I extends { isZero: False, isNegative: True, pred: Succ<infer T> }
-      ? { isZero: False, isNegative: True, pred: T }
-      : IZero);
-*/
-
-type test = (IPositive | IZero) extends IZero ? 'a' : 'b';
 
 type ISucc<I extends Integer>
   = I extends { isZero: Bool, isNegative: False }
