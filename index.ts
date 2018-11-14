@@ -71,6 +71,19 @@ type IPred<I>
       ? { isZero: False, isNegative: True, pred: Succ<Succ<T>> }
       : IMinus<ISucc<IZero>>;
 
+/*
+type IPred<I>
+  = I extends IZero
+    ? IMinus<ISucc<IZero>>
+    : I extends { isZero: False, isNegative: False, pred: Succ<infer T> }
+      ? (T extends Zero
+        ? IZero
+        : { isZero: False, isNegative: False, pred: T })
+      : I extends { isZero: False, isNegative: True, pred: Succ<infer T> }
+        ? { isZero: False, isNegative: True, pred: Succ<Succ<T>> }
+        : 'うんち';
+*/
+
 type IPPSum<L extends IPositive | IZero, R extends IPositive | IZero>
   = L extends Succ<infer T>
     ? { isZero: And<L['isZero'], R['isZero']>, isNegative: False, pred: Sum<T, Succ<R>>['pred'] }
@@ -109,6 +122,13 @@ type ISum<L extends Integer, R extends Integer>
               ? INNSum<L, R>
               : 'うんち'))
           : 'うんち')));
+
+type i0 = IZero;
+type i2 = ISucc<ISucc<i0>>;
+type i3 = ISucc<i2>;
+type i5 = ISum<i2, i3>; // 2 + 3 = 5
+type im3 = IMinus<i3>; // -3
+type im2 = ISum<i5, im3>; // 5 + (-3) = 2
 
 type Pred<N extends Succ<Nat>> = N['pred'];
 type IsZero<N extends Nat> = N['isZero'];
