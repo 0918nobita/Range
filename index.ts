@@ -76,13 +76,11 @@ type IPPSum<L extends IPositive | IZero, R extends IPositive | IZero>
     ? { isZero: And<L['isZero'], R['isZero']>, isNegative: False, pred: Sum<T, Succ<R>>['pred'] }
     : R;
 
-type INNSum<L extends INegative, R extends Integer>
-  = R extends INegative
-    ? IMinus<
-        IPPSum<
-          { isZero: False, isNegative: False, pred: L['pred'] },
-          { isZero: False, isNegative: False, pred: R['pred'] }>>
-    : 'うんち';
+type INNSum<L extends INegative, R extends INegative>
+  = IMinus<
+      IPPSum<
+        { isZero: False, isNegative: False, pred: L['pred'] },
+        { isZero: False, isNegative: False, pred: R['pred'] }>>;
 
 type IPNSum<L extends IPositive | IZero, R extends Integer>
   = R extends { isZero: True, isNegative: False }
@@ -95,7 +93,7 @@ type IPNSum<L extends IPositive | IZero, R extends Integer>
 
 type INPSum<L extends INegative, R extends IPositive | IZero> = IPNSum<R, L>;
 
-type ISum<L extends INegative, R extends Integer>
+type ISum<L extends Integer, R extends Integer>
   = L extends IZero
     ? R
     : (R extends IZero
@@ -104,26 +102,13 @@ type ISum<L extends INegative, R extends Integer>
         ? (R extends IPositive
           ? IPPSum<L, R>
           : IPNSum<L, R>)
-        : (R extends IPositive
-          ? INPSum<L, R>
-          : INNSum<L, R>)));
-
-type ttt = IPNSum<_i2, _im3>;
-type tttt = INPSum<_im2, _i3>;
-
-type _im6 = INNSum<_im5, _im1>; // (-5) + (-1) = -6
-type _i6 = IPPSum<IMinus<_im5>, IMinus<_im1>>; // (-(-5)) + (-(-1)) = 6
-
-type _i1 = ISucc<IZero>; //  1 
-type _i2 = ISucc<_i1>;   //  2
-type _i3 = ISucc<_i2>;   //  3
-type _i5 = IPPSum<_i2, _i3>;
-type _im3 = IMinus<_i3>; // -3 
-type _im4 = IPred<_im3>; // -4
-type _im5 = IPred<_im4>; // -5
-type _im2 = ISucc<_im3>; // -2
-type _im1 = ISucc<_im2>; // -1
-type _i0 = ISucc<_im1>;  //  0
+        : (L extends INegative
+          ? (R extends IPositive
+            ? INPSum<L, R>
+            : (R extends INegative
+              ? INNSum<L, R>
+              : 'うんち'))
+          : 'うんち')));
 
 type Pred<N extends Succ<Nat>> = N['pred'];
 type IsZero<N extends Nat> = N['isZero'];
