@@ -99,7 +99,7 @@ type INNSum<L extends INegative, R extends INegative>
         { isZero: False, isNegative: False, pred: L['pred'] },
         { isZero: False, isNegative: False, pred: R['pred'] }>>;
 
-type IPNSum<L extends IZero | IPositive, R extends Integer>
+type IPNSum<L extends IPositive, R extends Integer>
   = R extends { isZero: True, isNegative: False }
     ? L // when R == IZero
     : {
@@ -110,8 +110,7 @@ type IPNSum<L extends IZero | IPositive, R extends Integer>
 
 type INPSum<L extends INegative, R extends IPositive> = IPNSum<R, L>;
 
-// 現状、正の数 L と負の数 R について、 L > |R| のときだけ正しい Integer を返す
-type ttt = IPNSum<_i5, _im3>;
+type ttt = IPNSum<_i2, _im3>;
 type tttt = INPSum<_im2, _i3>;
 
 type _im6 = INNSum<_im5, _im1>; // (-5) + (-1) = -6
